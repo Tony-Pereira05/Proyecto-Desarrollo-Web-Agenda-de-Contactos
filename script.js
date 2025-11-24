@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========================================================================
     async function verificarCumpleanosHoy() {
         try {
-            const response = await fetch('php/verificador_cumpleaños.php');
+            const response = await fetch('php/verificador_cumpleanos.php');
             const data = await response.json();
 
             if (data.status === 'success' && data.cumpleaneros.length > 0) {
