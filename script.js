@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             toast.classList.remove('mostrar');
             toast.addEventListener('transitionend', () => toast.remove(), { once: true });
-        }, 3000);
+        }, 4000);
     }
 
     function togglePanel(panelId) {
@@ -348,22 +348,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========================================================================
     // VII. FUNCIÓN CUMPLEAÑOS
     // ========================================================================
-    // ... dentro de script.js
     async function verificarCumpleanosHoy() {
         try {
-            // Asegúrate que el nombre coincide con tu archivo real
-            const response = await fetch('php/verificador_cumple.php');
-
-            // Si aquí da error, mira la consola del navegador
+            const response = await fetch('php/verificador_cumpleanos.php');
             const data = await response.json();
 
             if (data.status === 'success' && data.cumpleaneros.length > 0) {
-                data.cumpleaneros.forEach(nombre => {
-                    mostrarToast(`🎉 ¡Hoy es cumpleaños de ${nombre}! Correo enviado.`, 'fiesta');
-                });
+                const lista = data.cumpleaneros;
+                let mensaje = '';
+
+                if (lista.length === 1) {
+                    // Caso: Solo 1 persona
+                    mensaje = `🎉 ¡Hoy es cumpleaños de ${lista[0]}! Se envió un correo.`;
+                } else {
+                    // Caso: Varias personas (Juan, Ana y Pedro)
+                    // Usamos Intl.ListFormat para unir con comas y "y" automáticamente
+                    const formatter = new Intl.ListFormat('es', { style: 'long', type: 'conjunction' });
+                    const nombresUnidos = formatter.format(lista);
+                    mensaje = `🎉 ¡Hoy cumplen años: ${nombresUnidos}! Se envió un correo con la lista.`;
+                }
+
+                // Mostramos UN solo toast con toda la información
+                mostrarToast(mensaje, 'fiesta');
             }
         } catch (error) {
-            // Esto te dirá exactamente qué está pasando si falla
             console.error('Error verificando cumpleaños:', error);
         }
     };
