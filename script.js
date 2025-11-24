@@ -13,19 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========================================================================
     // I. DATOS Y VARIABLES DE ESTADO
     // ========================================================================
-    
+
     /**
      * Array de contactos (se carga desde la base de datos)
      * @type {Array<Object>}
      */
     let datosSimulados = [];
-    
+
     /**
      * Estado del ordenamiento actual aplicado a la lista.
      * @type {string}
      */
     let ordenamientoActivo = '';
-    
+
     /**
      * Lista de usuarios filtrados y buscados.
      * @type {Array}
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('php/obtener_contactos.php');
             const data = await response.json();
-            
+
             if (data.success) {
                 datosSimulados = data.contactos;
                 filtrarYRenderizarUsuarios();
@@ -120,30 +120,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
         formData.append('id', id);
         formData.append('nombre', formularioElement.querySelector('[name="nombre"]').value);
-        
+
         // Obtener valores (pueden ser vacíos)
         const telefonoValue = formularioElement.querySelector('[name="telefono"]').value;
         const emailValue = formularioElement.querySelector('[name="email"]').value;
         const fechaValue = formularioElement.querySelector('[name="fecha_cumple"]').value;
-        
+
         // Agregar al FormData (el backend maneja los vacíos)
         formData.append('telefono', telefonoValue || '');
         formData.append('email', emailValue || '');
         formData.append('fecha_cumple', fechaValue || '');
-        
+
         try {
             const response = await fetch('php/editar_contacto.php', {
                 method: 'POST',
                 body: formData
             });
-            
+
             // Verificar que la respuesta sea OK
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 mostrarToast('Contacto actualizado exitosamente', 'exito');
                 cargarContactosDesdeDB(); // Recargar desde DB
@@ -166,20 +166,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const eliminarUsuario = async (id) => {
         const formData = new FormData();
         formData.append('id', id);
-        
+
         try {
             const response = await fetch('php/eliminar_contacto.php', {
                 method: 'POST',
                 body: formData
             });
-            
+
             // Verificar que la respuesta sea OK
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 mostrarToast('Contacto eliminado exitosamente', 'exito');
                 cargarContactosDesdeDB(); // Recargar desde DB
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarToast('Error de conexión: ' + error.message, 'peligro');
         }
     };
-        
+
     /**
      * Exporta usuarios a CSV (simulado)
      * @function
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========================================================================
     // IV. FUNCIONES DE UI Y RENDERIZADO
     // ========================================================================
-    
+
     /**
      * Muestra notificación toast
      * @function
@@ -219,9 +219,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const toast = document.createElement('div');
         toast.classList.add('toast', tipo);
         toast.textContent = mensaje;
-        
+
         toastContainer.appendChild(toast);
-        
+
         setTimeout(() => toast.classList.add('mostrar'), 10);
 
         setTimeout(() => {
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         targetPanel.classList.toggle('mostrar');
 
-        const isAnyPanelOpen = Object.values(sidebarPanels).some(panel => 
+        const isAnyPanelOpen = Object.values(sidebarPanels).some(panel =>
             panel && panel.classList.contains('mostrar')
         );
 
@@ -275,11 +275,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const emailVal = usuario.email || '';
         const fechaVal = usuario.fecha_cumple || '';
 
-        const fechaDisplay = usuario.fecha_cumple ? 
-            new Date(usuario.fecha_cumple + 'T12:00:00').toLocaleDateString('es-ES', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+        const fechaDisplay = usuario.fecha_cumple ?
+            new Date(usuario.fecha_cumple + 'T12:00:00').toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             }) : 'N/A';
 
         usuarioDiv.innerHTML = `
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </form>
         `;
-        
+
         return usuarioDiv;
     };
 
@@ -368,27 +368,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const hayFiltrosActivos = buscadorInput.value.trim() !== '' ||
-                                filtroDiaInput.value !== '' || 
-                                filtroMesSelect.value !== '' || 
-                                filtroAnioInput.value !== '';
+            filtroDiaInput.value !== '' ||
+            filtroMesSelect.value !== '' ||
+            filtroAnioInput.value !== '';
 
         usuariosOrdenados.forEach(usuario => {
             const usuarioDiv = crearTarjetaUsuario(usuario);
             if (hayFiltrosActivos) {
                 const infoOculta = usuarioDiv.querySelector('.info-oculta');
                 if (infoOculta) {
-                    infoOculta.style.display = 'block'; 
+                    infoOculta.style.display = 'block';
                 }
             }
-            
+
             listaUsuariosDiv.appendChild(usuarioDiv);
         });
 
-        if (typeof feather !== 'undefined' && feather.replace) { 
+        if (typeof feather !== 'undefined' && feather.replace) {
             feather.replace();
         }
     };
-        
+
     /**
      * Muestra el formulario de edición
      * @function
@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.querySelector('.info-oculta').style.display = 'none';
             }
         });
-        
+
         const card = document.querySelector(`.usuario-card[data-usuario-id="${usuarioId}"]`);
         if (!card) return;
 
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-            
+
             if (anioFiltroInput && anioFiltroInput.value) {
                 const anioStr = anioFiltroInput.value.trim();
 
@@ -475,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     esValido = false;
                 } else if (anioStr.length === 4) {
                     const anio = parseInt(anioStr, 10);
-                    
+
                     if (isNaN(anio) || anio < 1925) {
                         errores.push('El año de filtro es inválido (mínimo 1925).');
                         esValido = false;
@@ -489,7 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!esValido && errores.length > 0) {
             mostrarToast("⚠️ Error:\n" + errores.join('\n'), 'peligro');
-            return false; 
+            return false;
         }
 
         return esValido;
@@ -506,7 +506,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
         }
-        
+
         const terminoBusqueda = buscadorInput.value.toLowerCase();
         const filtroDia = filtroDiaInput.value;
         const filtroMesAbreviado = filtroMesSelect.value;
@@ -514,14 +514,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let datosFiltrados = datosSimulados.filter(usuario => {
             const coincideBusqueda = usuario.nombre.toLowerCase().includes(terminoBusqueda) ||
-                                     (usuario.email && usuario.email.toLowerCase().includes(terminoBusqueda)) ||
-                                     (usuario.telefono && String(usuario.telefono).includes(terminoBusqueda));
-            
+                (usuario.email && usuario.email.toLowerCase().includes(terminoBusqueda)) ||
+                (usuario.telefono && String(usuario.telefono).includes(terminoBusqueda));
+
             if (!coincideBusqueda) return false;
 
             if (usuario.fecha_cumple) {
                 const [anio, mes, dia] = usuario.fecha_cumple.split('-');
-                
+
                 if (filtroDia) {
                     const filtroDiaNormalizado = String(filtroDia).padStart(2, '0');
                     if (dia !== filtroDiaNormalizado) return false;
@@ -534,7 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (filtroAnio && anio !== filtroAnio) return false;
             }
-            
+
             return true;
         });
 
@@ -550,7 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
         buscadorWrapper.classList.add('active');
         buscadorInputAnimado.focus();
     }
-    
+
     /**
      * Cierra el buscador
      * @function
@@ -560,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
         buscadorInputAnimado.value = '';
         filtrarYRenderizarUsuarios();
     }
-    
+
     /**
      * Alterna el buscador
      * @function
@@ -602,15 +602,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!validarFormulario(formCrearUsuario)) return;
 
         const formData = new FormData(formCrearUsuario);
-        
+
         try {
             const response = await fetch('php/crear_contacto.php', {
                 method: 'POST',
                 body: formData
             });
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 const nuevoNombre = document.getElementById('nombre').value;
                 mostrarToast(`Contacto ${nuevoNombre} creado exitosamente.`, 'exito');
@@ -677,7 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Mostrar/Ocultar información
-        if (tarjeta && 
+        if (tarjeta &&
             !tarjeta.classList.contains('editando') &&
             !event.target.closest('button') &&
             !event.target.closest('input') &&
@@ -723,8 +723,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const estaEnMenu = event.target.closest('.menu-opciones-btn');
         const estaEnSidebar = event.target.closest('.sidebar');
         const estaEnPanel = event.target.closest('#form-crear-usuario-panel') ||
-                            event.target.closest('#filtrar-opciones') ||
-                            event.target.closest('#ordenar-opciones');
+            event.target.closest('#filtrar-opciones') ||
+            event.target.closest('#ordenar-opciones');
         const estaEnBuscador = event.target.closest('.search-wrapper');
         const estaEnMain = event.target.closest('main');
 
@@ -791,7 +791,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========================================================================
     // VI. INICIALIZACIÓN
     // ========================================================================
-    
+
     cargarContactosDesdeDB();
-    
+
+    // ========================================================================
+    // VII. NUEVA FUNCIÓN PARA LA TAREA
+    // ========================================================================
+
+    const verificarCumpleanosHoy = async () => {
+        try {
+            const response = await fetch('php/verificar_cumples_al_instante.php');
+            const data = await response.json();
+
+            if (data.status === 'success' && data.cumpleaneros.length > 0) {
+                // Recorremos la lista de cumpleañeros y mostramos una notificación por cada uno
+                data.cumpleaneros.forEach(nombre => {
+                    // Usamos tu función existente mostrarToast con un icono de fiesta
+                    mostrarToast(`🎉 ¡Hoy es cumpleaños de ${nombre}! Correo de alerta enviado.`, 'exito');
+                });
+            }
+        } catch (error) {
+            console.error('Error verificando cumpleaños:', error);
+        }
+    };
+
 }); // Fin de DOMContentLoaded
