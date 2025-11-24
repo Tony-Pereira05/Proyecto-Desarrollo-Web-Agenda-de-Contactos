@@ -348,9 +348,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========================================================================
     // VII. FUNCIÓN CUMPLEAÑOS
     // ========================================================================
+    // ... dentro de script.js
     async function verificarCumpleanosHoy() {
         try {
-            const response = await fetch('php/verificador_cumpleanos.php');
+            // Asegúrate que el nombre coincide con tu archivo real
+            const response = await fetch('php/verificador_cumple.php');
+
+            // Si aquí da error, mira la consola del navegador
             const data = await response.json();
 
             if (data.status === 'success' && data.cumpleaneros.length > 0) {
@@ -359,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         } catch (error) {
+            // Esto te dirá exactamente qué está pasando si falla
             console.error('Error verificando cumpleaños:', error);
         }
     };
